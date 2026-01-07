@@ -40,16 +40,61 @@ def call_llm(prompt: str):
 
 def parse_resume(resume_text: str):
     prompt = f"""
-    Extract the following from the resume below:
+You are an AI career advisor and recruiter assistant.
 
-    1. Skills (comma separated)
-    2. Total years of experience
-    3. Short professional summary
+Analyze the resume below and return ONLY valid JSON in the following format:
 
-    Resume:
-    {resume_text}
-    """
+{{
+  "skills": ["skill1", "skill2", "..."],
+  "total_experience_years": number,
+  "professional_summary": "short summary",
+
+  "recommended_roles": [
+    {{
+      "role": "Job title",
+      "reason": "Why this role fits the candidate"
+    }}
+  ],
+
+  "recommended_companies": [
+    {{
+      "company": "Company name",
+      "industry": "Industry",
+      "why": "Why the candidate is suitable"
+    }}
+  ],
+
+  "career_roadmap": [
+    {{
+      "stage": "Short Term (0–6 months)",
+      "focus": ["skills to improve"],
+      "actions": ["specific actions"]
+    }},
+    {{
+      "stage": "Mid Term (6–18 months)",
+      "focus": ["skills to improve"],
+      "actions": ["specific actions"]
+    }},
+    {{
+      "stage": "Long Term (18+ months)",
+      "focus": ["skills to master"],
+      "actions": ["specific actions"]
+    }}
+  ]
+}}
+
+Resume:
+{resume_text}
+
+Rules:
+- Do NOT add explanations outside JSON
+- Skills must be inferred from resume
+- Companies should be realistic and relevant
+- Roadmap must be actionable
+"""
+
     return call_llm(prompt)
+
 
 
 def match_candidate_job(candidate, job):
